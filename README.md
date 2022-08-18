@@ -1,5 +1,4 @@
 # C語言-程式筆記        (KeRong)  
-https://hackmd.io/@krameri120/kerong  
 ![](https://i.imgur.com/kApUvvh.gif)
 ## 概述  
 **C語言**具有高效、靈活、功能豐富、表達力強和較高的[可移植性](https://zh.wikipedia.org/wiki/%E7%A7%BB%E6%A4%8D_(%E8%BB%9F%E9%AB%94) "移植 (軟體)")等特點，在[程式設計](https://zh.wikipedia.org/wiki/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1 "程式設計")中備受青睞，成為最近25年使用最為廣的程式語言[TIOBE Programming Community Index](https://www.tiobe.com/tiobe-index/)
@@ -266,27 +265,25 @@ char sentence []="KeRong is 18 years old";
 char str [20];
 int i;
 sscanf (sentence,"%s %*s %d",str,&i);
-printf ("%s -> %d\n",str,i);
-Output:  
-KeRong -> 12 
+printf ("%s -> %d\n",str,i);//KeRong -> 12 
 ```
 ### Character input/output:  
 #### getchar (從標準輸入獲取字元)  
 ```c
 int getchar ( void );//返回的是獲取ascii值，錯誤回傳-1
 example:
-do {
+do{
     c=getchar();
-    putchar (c);
-  } while (c != '\n');
+    putchar(c);
+}while (c != '\n');
 ```
 #### gets (從標準輸入讀取字串並將它們儲到 str 中，直到到達換行符或文件結尾)  
 ```c
 char * gets ( char * str );//成功返回該字串，不成功返回(null)
 example:
 char string [256];
-gets (string);        //123abc
-printf ("%s",string); //out:123abc
+gets(string);        //123abc
+printf("%s",string); //out:123abc
 ```
 #### putchar (將一個字元寫入標準輸出)  
 ```c
@@ -302,7 +299,7 @@ for (c = 'A' ; c <= 'Z' ; c++){
 int puts ( const char * str );//成功回傳一個非負整數，錯誤回傳EOF(-1)
 example:
 char string [] = "Hello world!";
-puts (string);
+puts(string);
 ```
 ## <stdlib.h> (定義雜項函式及記憶體分配函式)  
 ### 數據類型  
@@ -379,7 +376,7 @@ strcpy(str,"Hello ");
 char *new_str=(char *)realloc(str,25*sizeof(char));
 str=new_str;
 strcat(str,"world");
-printf("%s",str);
+printf("%s",str);//Hello world
 free(str);
 ```
 #### free (系統釋放動態分配的內存，如果是空指針，則無動作發生)  
@@ -451,9 +448,216 @@ int main(){
 ```c
 div_t divresult;
 divresult = div (38,5);
-printf ("38 div 5 => %d,rem = %d\n", divresult.quot, divresult.rem);
+printf ("quot = %d,rem = %d\n", divresult.quot, divresult.rem);//quot = 7,rem = 3
 ```
 
+## <string.h> (字串處理)  
+### Copying  
+#### memcpy (str2複製n個字元到儲存到str1，記憶體區域不能重疊)  
+```c
+void *memcpy(void *str1, const void *str2, size_t n);
+example:
+struct {
+    char name[40];
+    int age;
+} person, person_copy;
+int main (){
+    char myname[] = "KeRong";
+    memcpy(person.name,myname,strlen(myname)+1);
+    person.age=18;
+    memcpy(&person_copy,&person,sizeof(person));
+    printf("person_copy: %s, %d \n",person_copy.name,person_copy.age);
+    return 0;
+}
+/*=======<從第幾個字元複製>========*/
+char s[]={"kerong krameri120 hello"};
+char d[20];
+memcpy(d, s+7,10);
+//memcpy(d,s+7*sizeof(char),10*sizeof(char));
+d[10]='\0';
+printf("%s", d);//krameri120
+```
+#### memmove (str2複製n個字元到儲存到str1，記憶體區域能重疊，比memcpy安全)  
+```c
+void * memmove ( void * destination, const void * source, size_t num );
+example:
+char str[]="memmove can be very useful......";
+memmove(str+20,str+15,11);
+puts(str);//memmove can be very very useful.
+```
+#### strcpy (把src所指向的字串複製到dest，dest不夠大會有溢出狀況)  
+```c
+char * strcpy ( char * destination, const char * source );
+example:
+char str[40];
+char str1[]="Sample string";
+strcpy (str,str1);
+puts(str);//Sample string
+```
+#### strncpy (把src所指向的字串複製到dest，最多複制n個字元)
+```c 
+char * strncpy ( char * destination, const char * source, size_t num );
+example:
+char str1[]= "To be or not to be";
+char str2[40];
+char str3[40];
+strncpy(str2,str1,sizeof(str2));
+strncpy(str3,str2,5);
+str3[5] = '\0';
+puts(str1);//To be or not to be
+puts(str2);//To be or not to be
+puts(str3);//To be
+```
+
+### Concatenation  
+#### strcat (src指向結尾的字串的字串附加到指向dest)  
+```c
+char * strcat ( char * destination, const char * source );
+example:
+char str[80]={"String are "};
+strcat(str,"concatenated.");
+puts(str);//String are concatenated.
+```
+#### strncat (追加src指向字串結尾的字串到dest指向最多n個字元長)  
+```c
+char * strncat ( char * destination, const char * source, size_t num );
+example:
+char str1[20]={"To be "};
+char str2[20]={"or not to be"};
+strncat(str1, str2, 6);
+puts(str1);//To be or not to be
+```
+
+### Comparison  
+
+|返回值|表示|
+|:-:|:-:|
+|<0|str1<str2|
+|=0|str1=str2|
+|>0|str1>str2|
+
+- 根據ascii比較字元大小  
+
+#### memcmp (把ptr1和ptr2的前n個字元進行比較)  
+```c
+int memcmp ( const void * ptr1, const void * ptr2, size_t num );
+example:
+int n=memcmp(str1, str2, 5);
+```
+#### strcmp (把str1和str2進行比較)  
+```c
+int strcmp ( const char * str1, const char * str2 );
+example:
+int n=memcmp(str1,str2);
+```
+#### strncmp (把str1和str2的前n個字元進行比較)  
+```c
+int strncmp ( const char * str1, const char * str2, size_t num );
+example:
+int n=memcmp(str1,str2,5);
+```
+
+### Searching  
+#### memchr (搜索str指向字串的前n個字元中第一次出現的字元c)  
+```c
+const void * memchr ( const void * ptr, int value, size_t num );
+example:
+char str[] = "Example string";
+char *search=(char*)memchr(str,'p',strlen(str));
+printf("%d",search-str);//4
+```
+#### strchr (搜索str指向字串第一次出現的字元c) 
+```c
+const char * strchr ( const char * str, int character );
+example:
+char str[] = "Example string";
+char *search=strchr(str,'s');;
+printf("%d",search-str);//8
+```
+#### strrchr (搜索str指向字串最後一次出現的字元c)
+```c
+const char * strrchr ( const char * str, int character );
+example:
+char str[] = "kerong krameri120";
+char *search=strrchr(str,'r');;
+printf("%d",search-str);//12
+```
+#### strpbrk (str1中找出最先含有str2中任一字元的位置) 
+```c
+strpbrk -> string pointer break
+const char * strpbrk ( const char * str1, const char * str2 );
+example:
+char str[] = "This is a sample string";
+char key[] = "aeiou";
+char *search=strpbrk(str,key);
+printf("%d",search-str);//2(i)
+```
+#### strspn (str1連續有幾個字元都含字串str2中的字元)  
+```c
+size_t strspn ( const char * str1, const char * str2 );
+example:
+char strtext[] = "12s9th";
+char cset[] = "1234567890";
+int i=strspn(strtext,cset);
+printf("%d\n",i);//2
+```
+#### strcspn (str1連續有幾個字元都不含字串str2中的字元)  
+```c
+strcspn -> complementary span
+size_t strcspn ( const char * str1, const char * str2 );
+example:
+char str[] = "fcb7a3";
+char keys[] = "1234567890";
+int i=strcspn(str,keys);
+printf("%d\n",i);//3
+```
+#### strstr (找到第一次出現在str1字串中的str2字串)  
+```c
+const char * strstr ( const char * str1, const char * str2 );
+example:
+char str[] ="a simple b simple";
+char *search=strstr(str,"simple");
+printf("%d",search-str);//2
+strncpy(search,"sample",6);
+search=strstr(str,"simple");//again
+printf("%d",search-str);//11
+```
+#### strtok (分解字串str為一組字串，delim為分隔符)
+```c
+char * strtok ( char * str, const char * delimiters );
+example:
+char str[] ="- This, a sample string.";
+char *pick;
+pick=strtok(str," ,.-");
+while(pick!= NULL)
+{
+    printf("%s\n",pick);
+    pick=strtok(NULL, " ,.-");
+}
+/*
+out:
+This
+a
+sample
+string
+*/
+```
+### Other  
+#### strlen (計算給定字串的長度)
+```c
+size_t strlen ( const char * str );
+example:
+char str[]= "kerong"; 
+printf("Length:%d", strlen(str));//Length:6
+```
+#### memset (複製字元value到ptr指定字串num個字元)
+```c
+void * memset ( void * ptr, int value, size_t num );
+example:
+char str[] = "kerong krameri120";
+memset(str,'-',6);
+puts(str);//------ krameri120
+```
 ## <ctype.h> (測試字元是否屬於特定的字元類別)  
 |名字|描述|
 |:-:|-|
@@ -483,7 +687,52 @@ printf ("38 div 5 => %d,rem = %d\n", divresult.quot, divresult.rem);
 | INT_MIN | -2^31^ |INT_MAX | 2^31^ -1 | UINT_MAX | 2^32^ -1|
 | LONG_MIN | -2^31^ |LONG_MAX | 2^31^ -1 | ULONG_MAX | 2^32^ -1|
 | LLONG_MIN | -2^63^ | LLONG_MAX | 2^63^ -1 |ULLONG_MAX |2^64^ -1|
+## <math.h> (定義數學函式)   
+### Trigonometric functions
+- #define PI acos(-1)  
+- radian=degrees*PI/180.0  
+- degrees=radian*180/PI  
 
+| 函數原型 | 描述  |
+|-|:-:|
+| double sin(x)  | 正弦  |
+| double cos(x)  | 餘弦  |
+| double tan(x)  | 正切  |
+| double asin(x) | 反正弦   |
+| double acos(x) | 反餘弦   |
+| double atan(x) | 反正切  |
+| double atan2(y,x)|  反正切    |
+| double sinh(x) | 雙曲正弦  |
+| double cosh(x) | 雙曲餘弦  |
+| double tanh(x) | 雙曲正切  |
+
+### Exponential、Logarithmic、Power functions
+| 函數原型 | 描述  |
+|:-|-|
+| double exp(x)  | 指數函數  |
+| double sqrt(x) | 開平方根  |
+| double cbrt(x) | 開立方根  |
+| double log(x)  | 自然對數  |
+| double log10(x)| 常用對數  |
+| double pow(x,y)| 計算x^y^   |
+| double hypot(a,b)|計算直角三角形斜邊長度|
+
+### Rounding and remainder functions
+| 函數原型 | 描述  |
+|:-|-|
+|double ceil(x)|上取整|
+|double floor(x)|下取整|
+|double round(x)|四捨五入|
+|double trunc(x)|小數直接捨去|
+|double fmod(x,y)|返回除以x/y的剩餘值|
+
+
+### Other functions
+| 函數原型 | 描述  |
+|-|-|
+|double fabs(x)|求浮點數的絕對值|
+|double abs(x)|求整數的絕對值|
+|double fma(x,y,z)|x * y + z (皆為double)|
 ## <stdbool.h> (包含四個用於布林型的預定義巨集)  
 
 |name|value|
