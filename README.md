@@ -1,4 +1,5 @@
 # C語言-程式筆記        (KeRong)  
+https://hackmd.io/@krameri120/kerong  
 ![](https://i.imgur.com/kApUvvh.gif)
 ## 概述  
 **C語言**具有高效、靈活、功能豐富、表達力強和較高的[可移植性](https://zh.wikipedia.org/wiki/%E7%A7%BB%E6%A4%8D_(%E8%BB%9F%E9%AB%94) "移植 (軟體)")等特點，在[程式設計](https://zh.wikipedia.org/wiki/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1 "程式設計")中備受青睞，成為最近25年使用最為廣的程式語言[TIOBE Programming Community Index](https://www.tiobe.com/tiobe-index/)
