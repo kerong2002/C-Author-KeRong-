@@ -175,7 +175,7 @@ int setvbuf(FILE * stream,   char   * buf,   int type,   unsigned size);
 #### printf (用於將格式化後的資料輸出到標準輸出)  
 ```c
 int printf(const char * restrict format, ...)//正確返回輸出的字元總數，錯誤返回負值
-printf("%[格式][最小寬度][.精度]\[類型長度]");
+printf("%[格式][最小寬度][.精度][類型長度]");
 setbuf(stdout,NULL);//清空緩衝區
 setvbuf(stdout,NULL,_IOFBF,0);//清空緩衝區
 ```
