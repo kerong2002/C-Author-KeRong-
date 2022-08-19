@@ -50,6 +50,10 @@ n所定義的資料型態為浮點數↓
 | 位元 OR | a \| b | 位元 AND | a & b  |
 | 位元一的補碼 | ~a | 位元 XOR | a ^ b  |
 
+- a % 2^n^ = a & (n-1)
+- a + b = a^b + (a & b) << 1
+- a / 2^n^ = a >> n
+- A * 2^n^ = A << n
 ### 其他運算子  
 | 運算子名稱 | 語法 | 運算子名稱 | 語法  |
 |:-:|:-:|:-:|:-:|
@@ -125,7 +129,10 @@ switch (value){
         break;
 }
 ```
-
+## GCC(GNU Compiler Collection)
+- gcc -o test.exe test.c//產生executable file
+- gcc test.exe <input.txt> out.txt//輸出結果到out.txt
+- gcc -E test.c //查看預處理結果
 ## 常見標頭檔 [C standard library](https://cplusplus.com/reference/clibrary/)  
 ```c
 #include<stdio.h>　　　　 //定義輸入、輸出函式
@@ -158,6 +165,28 @@ switch (value){
     a=b;\
     b=temp;\
 }
+#define STR(s)   #x//將STR(x)內轉形成字串
+#define COMBINESTR(x,y) x##y //串接xy
+#define makechar(x)    #@x //轉成字元
+#define max(a, b)     \
+{(typeof(a) _a = a;   \
+  typeof(b) _b = b;   \
+  _a > _b ? _a : _b;) \
+}
+/*======<格式化>=======*/
+void is_int(int x) { printf("%d\n", x); }
+void is_char(char x) { printf("%c\n", x); }
+void is_string(char *x) { printf("%s\n", x); }
+void is_double(double x) { printf("%f",x);}
+void is_float(float x) {printf("%f\n",x);}
+#define print(X)\
+    _Generic((X),\
+    int:is_int,\
+    char:is_char,\
+    char *:is_string,\
+    double:is_double,\
+    default:is_float\
+    )(X)
 ```
 ### EOF (通常為-1)  
 - End-of-File 以指示已到達文件結尾或指示其他一些失敗條件  
@@ -204,6 +233,12 @@ setvbuf(stdout,NULL,_IOFBF,0);//清空緩衝區
 - %0*d,6：(延伸上面)左邊不足以0替代
 - %.8f：超過精度，截斷
 - %.8f：不足精度，補後置0
+```c
+printf("%d", 1 > 0 ? 1 : 0);
+printf(1 < 0 ? "%d" : "%c", 65);
+a=1; 
+printf("%d %d %d %d %d %d\n",a++, ++a, a++, ++a, a++, ++a );//6 7 4 7 2 7
+```
 #### sprintf (發送str指向一個字串的格式化輸出)  
 ```c
 int sprintf ( char * str, const char * format, ... );
