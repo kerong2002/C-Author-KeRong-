@@ -1,5 +1,8 @@
 # C語言-程式筆記 (KeRong)  
-![](https://i.imgur.com/kApUvvh.gif)
+
+![](https://i.imgur.com/sKtp2HB.jpg)
+
+<!--![](https://i.imgur.com/kApUvvh.gif)-->
 ## 概述  
 **C語言**具有高效、靈活、功能豐富、表達力強和較高的[可移植性](https://zh.wikipedia.org/wiki/%E7%A7%BB%E6%A4%8D_(%E8%BB%9F%E9%AB%94) "移植 (軟體)")等特點，在[程式設計](https://zh.wikipedia.org/wiki/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1 "程式設計")中備受青睞，成為最近25年使用最為廣的程式語言[TIOBE Programming Community Index](https://www.tiobe.com/tiobe-index/)
 ，並且廣泛用於[系統軟體](https://zh.wikipedia.org/wiki/%E7%B3%BB%E7%BB%9F%E8%BD%AF%E4%BB%B6 "系統軟體")與[應用軟體](https://zh.wikipedia.org/wiki/%E5%BA%94%E7%94%A8%E8%BD%AF%E4%BB%B6 "應用軟體")的開發。
@@ -50,6 +53,7 @@ n所定義的資料型態為浮點數↓
 | 位元 OR | a \| b | 位元 AND | a & b  |
 | 位元一的補碼 | ~a | 位元 XOR | a ^ b  |
 
+透過**位元運算子**取代**算術運算子**
 - a % 2^n^ = a & (n-1)
 - a + b = a^b + (a & b) << 1
 - a / 2^n^ = a >> n
@@ -156,31 +160,35 @@ switch (value){
 |stdout|標準輸出流|
 ### Marcos 巨集  
 ```c
-#define true 1 //定義true=1
-#define max(a,b) ((a>=b)?a:b) //三元運算取最大值
-#define swap(a,b) {int temp=a;a=b;b=temp;} //兩數交換
+#define true 1                         //定義true=1
+#define max(a,b) ((a>=b)?a:b)          //三元運算取最大值
 /*====<可以透過'\'來分段編寫macro>===*/
 #define swap(a,b){\
     int temp=a;\
     a=b;\
     b=temp;\
 }
-#define STR(s)   #x//將STR(x)內轉形成字串
-#define COMBINESTR(x,y) x##y //串接xy
-#define makechar(x)    #@x //轉成字元
-#define max(a, b)     \
+#define STR(s) #x                      //將STR(x)內轉形成字串
+#define COMBINESTR(x,y) x##y           //串接xy(數字)
+#define makechar(x) #@x                //轉成字元
+#define max(a, b)     \                //取最大值(根據資料型態決定)
 {(typeof(a) _a = a;   \
   typeof(b) _b = b;   \
   _a > _b ? _a : _b;) \
 }
-/*======<格式化>=======*/
+#define swap(a,b){\                     //兩數交換(快速且不會overflow)
+    a=a^b;\
+    b=a^b;\
+    a=a^b;\
+}
+/*======<格式化輸出>=======*/
 void is_int(int x) { printf("%d\n", x); }
 void is_char(char x) { printf("%c\n", x); }
 void is_string(char *x) { printf("%s\n", x); }
 void is_double(double x) { printf("%f",x);}
 void is_float(float x) {printf("%f\n",x);}
 #define print(X)\
-    _Generic((X),\
+    _Generic((X),\                //_Generic選擇
     int:is_int,\
     char:is_char,\
     char *:is_string,\
@@ -205,7 +213,7 @@ int setvbuf(FILE * stream,   char   * buf,   int type,   unsigned size);
 ```c
 int printf(const char * restrict format, ...)//正確返回輸出的字元總數，錯誤返回負值
 printf("%[格式][最小寬度][.精度][類型長度]");
-setbuf(stdout,NULL);//清空緩衝區
+setbuf(stdout,NULL);          //清空緩衝區
 setvbuf(stdout,NULL,_IOFBF,0);//清空緩衝區
 ```
 - %c：以字元方式輸出
@@ -234,9 +242,11 @@ setvbuf(stdout,NULL,_IOFBF,0);//清空緩衝區
 - %.8f：超過精度，截斷
 - %.8f：不足精度，補後置0
 ```c
-printf("%d", 1 > 0 ? 1 : 0);
+/*==========<三元運算子>=========*/
+printf("%d", 1 > 0 ? 1 : 0);    
 printf(1 < 0 ? "%d" : "%c", 65);
-a=1; 
+/*=========<輸出由右至左推>======*/
+int a=1; 
 printf("%d %d %d %d %d %d\n",a++, ++a, a++, ++a, a++, ++a );//6 7 4 7 2 7
 ```
 #### sprintf (發送str指向一個字串的格式化輸出)  
@@ -251,8 +261,8 @@ sprintf(s, "%.2f", (double)100);  //100強制轉型double並存放至陣列s
 ```c
 int snprintf ( char * str, size_t size, const char * format, ... );
 example:
-char s[99]={'\0'};                //存放位置
-snprintf(s,2,"%d",123);           //存放12至陣列s
+char s[99]={'\0'};            //存放位置
+snprintf(s,2,"%d",123);       //存放12至陣列s
 ```
 
 #### scanf (格式化的輸入)  
@@ -289,7 +299,7 @@ scanf("%[*][輸入數據寬度][類型]");
 - %[^\n]%*c：整行讀入
 ```c
 假設測資是a=3,b=2,c=3
-scanf("a=%d,b=%d,c=%d",&a,&b,&c);//非格式化存入資料
+scanf("a=%d,b=%d,c=%d",&a,&b,&c);           //非格式化存入資料
 scanf("%80[a-z | A-Z | 0-9|,.-]", address); //80個指定字元讀入
 ```
 #### sscanf (從s讀取數據並依格式將它們存儲到位置)  
@@ -788,4 +798,105 @@ puts(str);//------ krameri120
 |bitand|&|bitor|\||
 |compl|~| | |
 
+## Struct(結構)
+```c
+struct <結構型態名稱>{  
+    <資料型態1> <欄位名稱1>；
+    <資料型態2> <欄位名稱2>；
+}；
+example:
+struct student{       //此結構為struct student
+     int studenID;    //學號
+     char name[20];   //姓名
+};
+```
+- 使用結構變數和點號運算子 (.)
+```c
+struct student myclass;                       //定義myclass類別為struct student
+scanf("%d%s",&myclass.studenID,myclass.name); //輸入學號和姓名到myclass
+printf("%d %s",myclass.studenID,myclass.name);//輸出學號和姓名
+```
+- 使用指向結構變數的指標和箭號運算子(->)
+```c
+struct student *ptr=&myclass;                  //承接上面程式碼
+printf("%d %s\n", ptr->studenID,ptr->name);    //輸出學號和姓名
+//ptr->studenID 等於 (*ptr).studenID
+```
+## Typedef(自定義類型)
+```c
+typedef struct{  
+    <資料型態1> <欄位名稱1>；
+    <資料型態2> <欄位名稱2>；
+}<結構型態名稱>；
+example:
+typedef sturct {
+    char name[20];    //姓名
+    int id;           //學號
+    double score;     //成績
+}studtype;            //studtype是結構型態的名稱
+```
+- 結構型態之變項宣稱與初值設定
+```c
+studtype stu1= {"kerong",38,80};
+//利用自訂結構型態studtype宣稱結構變項stu1
+//並設定結構變項stu1各欄位之初值
+```
+- 利用指定敘述以操作結構變項之內容
+```c
+stu1.name[] ="krameri120";
+stu1.id = 30;
+stu1.score = 85;
+```
+- 透過Dynamic Memory建立學生資料表
+```c
+typedef struct{
+     int studenID;    //學號
+     char name[20];   //姓名
+}student;
+int main(){
+    student *data_sheet=(student *)malloc(10*sizeof(student));     //定義最大10名學生資料表
+    for(int x=0;x<10;x++){
+        scanf("%d%s",&data_sheet[x].studenID,data_sheet[x].name);   //輸入10名學生資料
+    }
+    for(int x=0;x<10;x++){
+        printf("%d %s\n",data_sheet[x].studenID,data_sheet[x].name);//輸出10名學生資料
+    }
+    return 0;
+}
+```
+## Union (聯合)
+- union中可以定義多個成員，union的大小由最大的成員的大小決定。   
+- union成員共享同一塊大小的內存，一次只能使用其中的一個成員。   
+- 對某一個成員賦值，會覆蓋其他成員的值
+```c
+typedef union{
+    <資料型態1> <欄位名稱1>；
+    <資料型態2> <欄位名稱2>；
+}<聯合型態名稱>；
+/*
+目的:
+1.解決相同信息的困擾，避免重複代碼，提高程式碼的簡潔性
+2.節省內存
+*/
+```
+## Enum(列舉)
+```c
+typedef enum{ 
+   <列舉值1>, 
+   <列舉值2>,
+}<列舉資料型態名稱>；
+example:
+typedef enum {//定義禮拜一到禮拜日所代表的值1~7
+   Monday=1,Tuesday,Wedsday,Thursday,Friday,Saturday,Sunday
+}day;         //結構名稱定義為day
+int main(){
+    day today;
+    char str_day[][10]={" ","Monday","Tuesday","Wedsday",
+                 "Thursday","Friday","Saturday","Sunday"};
+    for(today=Monday;today<=Sunday;today++){
+        printf("%d %s\n",today,str_day[today]);//依序輸出大小和星期
+    }
+    return 0;
+}
+```
 
