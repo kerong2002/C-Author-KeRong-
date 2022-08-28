@@ -1,6 +1,6 @@
 # C語言-程式筆記 (KeRong)  
 
-![](https://i.imgur.com/Sas5LcP.gif)
+![](https://i.imgur.com/aU172rl.gif)
 <!--![](https://i.imgur.com/sKtp2HB.jpg)-->
 
 <!--![](https://i.imgur.com/kApUvvh.gif)-->
