@@ -1,5 +1,5 @@
 # C語言-程式筆記 (KeRong)  
-連結：https://hackmd.io/@krameri120/kerong
+## 筆記連結：https://hackmd.io/@krameri120/kerong
 ![](https://i.imgur.com/aU172rl.gif)
 <!--![](https://i.imgur.com/sKtp2HB.jpg)-->
 
